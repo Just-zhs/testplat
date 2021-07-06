@@ -1,6 +1,6 @@
 {% extends 'layout/basic.html' %}
 {% load static %}
-{% block title %}用户注册{% endblock %}
+{% block title %}短信登录{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/account.css' %}">
@@ -15,8 +15,8 @@
 
 {% block content %}
     <div class="account">
-        <h1 class="title">用户注册</h1>
-        <form id="regForm" method="POST" novalidate>
+        <h1 class="title">用户短信登录</h1>
+        <form id="smsForm" method="POST" novalidate>
             {% csrf_token %}
             {% for field in form %}
                 {% if field.name == 'code' %}
@@ -41,7 +41,7 @@
                 {% endif %}
             {% endfor %}
             <div align="center">
-                <input id="btnSubmit" type="button" class="btn btn-primary" style="width: 200px" value="注册"></input>
+                <input id="btnSubmit" type="button" class="btn btn-primary" style="width: 200px" value="登录"></input>
             </div>
         </form>
     </div>
@@ -62,9 +62,9 @@
                 $('.error-msg').empty()
                 //console.log($('#regForm').serialize())//所有字段数据+csrf_token
                 $.ajax({
-                    url: "{% url 'register' %}",
+                    url: "{% url 'login_sms' %}",
                     type: "POST",
-                    data: $('#regForm').serialize(),
+                    data: $('#smsForm').serialize(),
                     dataType: "JSON",
                     success: function (res) {
                         if (res.status) {
@@ -91,7 +91,7 @@
                     type: "GET",
                     data: {
                         mobile_phone: phone_number,
-                        tpl: "register"
+                        tpl: "login"
                     },
                     dataType: "JSON",//将服务器返回的数据反序列化为字典
                     success: function (res) {
@@ -110,6 +110,7 @@
             })
         }
 
+        // 倒计时功能
         function sendSmsRemind() {
             let $smsBtn = $('#btnSms');
             $smsBtn.prop('disabled', true);
