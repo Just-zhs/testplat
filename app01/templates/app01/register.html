@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    {#    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap-theme.css" rel="stylesheet">#}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <style>
+        .account {
+            width: 600px;
+            margin: auto;
+
+        }
+    </style>
+</head>
+<body>
+<div class="account">
+    <h1 style="text-align: center">注册</h1>
+    <form>
+        {% for field in form %}
+            {% if field.name == 'code' %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <div class="clearfix">
+                        <div class="col-md-6" style="padding-left: 0">{{ field }}</div>
+                        <div class="col-md-6"><input type="button" class="btn btn-default" value="点击获取验证码"></div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div align="center">
+            <button type="submit" class="btn btn-primary" style="width: 200px">注册</button>
+        </div>
+    </form>
+
+</div>
+<script>
+    function
+</script>
+</body>
+</html>
