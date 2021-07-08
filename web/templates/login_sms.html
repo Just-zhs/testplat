@@ -40,6 +40,12 @@
                     </div>
                 {% endif %}
             {% endfor %}
+            <div>
+                <div style="float: right">
+                    <a href="{% url 'login' %}">用户名密码登录</a>
+                </div>
+            </div>
+            <br>
             <div align="center">
                 <input id="btnSubmit" type="button" class="btn btn-primary" style="width: 200px" value="登录"></input>
             </div>

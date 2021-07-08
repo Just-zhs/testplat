@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from web.forms.account import RegisterModelForm, SendSmsForm, LoginSMSForm
+from web import models
+from web.forms.account import RegisterModelForm, SendSmsForm, LoginSMSForm, LoginForm
 
 
 def register(request):
@@ -40,7 +41,7 @@ def login_sms(request):
     """短信登录"""
     if request.method == 'GET':
         form = LoginSMSForm()
-        return render(request,'login_sms.html',{'form':form})
+        return render(request, 'login_sms.html', {'form': form})
     else:
         form = LoginSMSForm(request.POST)
         if form.is_valid():
@@ -48,5 +49,45 @@ def login_sms(request):
             user_object = form.cleaned_data['mobile_phone']
             # todo：把user_object中的用户信息放入session
             print(user_object)
-            return JsonResponse({"status":True,'data':"/index/"})
-        return JsonResponse({"status":False,'error': form.errors})
+            return JsonResponse({"status": True, 'data': "/index/"})
+        return JsonResponse({"status": False, 'error': form.errors})
+
+
+def login(request):
+    """用户名密码登录"""
+    if request.method == "GET":
+        form = LoginForm(request)
+        return render(request, 'login.html', {'form': form})
+    form = LoginForm(request, data=request.POST)
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        from django.db.models import Q
+        user_object = models.UserInfo.objects.filter(Q(email=username) | Q(mobile_phone=username)).filter(
+            password=password).first()
+        if user_object:
+            request.session['user_id'] = user_object.id
+            request.session.set_expiry(60 * 60 * 24)
+            return redirect('index')
+        form.add_error('username', '用户名或密码错误')
+    return render(request, 'login.html', {'form': form})
+
+def logout(request):
+    request.session.flush()
+    return redirect('index')
+
+
+def image_code(request):
+    """生成验证码"""
+    from utils.image_code import check_code
+    image_object, code = check_code()
+    # 写入session
+    request.session['image_code'] = code
+    # 修改session过期时间
+    request.session.set_expiry(60)
+    # 把图片的内容写入到内存stream
+    from io import BytesIO
+    stream = BytesIO()
+    image_object.save(stream, 'png')
+
+    return HttpResponse(stream.getvalue())

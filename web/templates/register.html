@@ -59,7 +59,7 @@
         //点击提交
         function bindClickSubmit() {
             $('#btnSubmit').click(function () {
-                $('.error-msg').empty()
+                $('.error-msg').empty();
                 //console.log($('#regForm').serialize())//所有字段数据+csrf_token
                 $.ajax({
                     url: "{% url 'register' %}",
