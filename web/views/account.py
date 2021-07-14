@@ -1,3 +1,6 @@
+import datetime
+import uuid
+
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -14,7 +17,19 @@ def register(request):
     form = RegisterModelForm(request.POST)
     if form.is_valid():
         # 验证通过，写入数据库(密码要是密文）
-        form.save()
+        # form.save()
+        instance = form.save()
+        # 创建交易
+        policy_object = models.PricePolicy.objects.filter(category=1,title="个人免费版").first()
+        models.Transaction.objects.create(
+            status=2,
+            order=str(uuid.uuid4()),
+            user=instance,
+            price_policy=policy_object,
+            count=0,
+            start_datetime=datetime.datetime.now()
+        )
+
         return JsonResponse({'status': True, 'data': '/login/'})
     else:
         print(form.errors)

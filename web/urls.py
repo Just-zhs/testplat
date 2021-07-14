@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 
-from web.views import account, home
+from web.views import account, home, project
 
 urlpatterns = [
     path('register/', account.register, name='register'),
@@ -10,5 +10,7 @@ urlpatterns = [
     path('send/sms/', account.send_sms, name='send_sms'),
     path('index/', home.index, name='index'),
     path('logout/', account.logout, name='logout'),
+    #   项目管理
+    path('project/list', project.project_list, name='project_list'),
 
 ]
